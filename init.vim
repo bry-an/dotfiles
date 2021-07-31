@@ -22,8 +22,12 @@ set formatoptions-=ro
 syntax on
 
 call plug#begin('~/.vim/plugged')
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+" Telescope
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
+
 Plug 'pangloss/vim-javascript'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
@@ -35,7 +39,6 @@ Plug 'vim-syntastic/syntastic'
 Plug 'eslint/eslint'
 Plug 'dense-analysis/ale'
 Plug 'jiangmiao/auto-pairs'
-Plug 'stsewd/fzf-checkout.vim'
 Plug 'tpope/vim-surround'
 Plug 'mileszs/ack.vim'
 Plug 'neovim/nvim-lspconfig'
@@ -48,9 +51,15 @@ Plug 'guns/vim-sexp'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'eraserhd/parinfer-rust'
 Plug 'tpope/vim-fireplace'
+" allow other plugins to tap into . repeat
+Plug 'tpope/vim-repeat'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " update the parsers on update
+Plug 'nvim-treesitter/playground'
+Plug 'tpope/vim-commentary'
 call plug#end()
 colorscheme gruvbox
 
+" syntax highlighting
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
@@ -58,6 +67,7 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_javascript_eslint_exe = 'npm run lint --'
 let g:syntastic_javascript_eslint_exec = './eslint-script.sh'
+" linter config
 let g:ale_linter_aliases = {'svelte': ['css', 'javascript', 'html'], 'vue': ['css', 'javascript']}
 let g:ale_linters = {'svelte': ['eslint'], 'vue': ['eslint']}
 let g:ale_fixers = {'svelte': ['eslint'], 'javascript': ['eslint'], 'vue': ['eslint']}
@@ -78,10 +88,39 @@ let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 let $FZF_DEFAULT_OPTS='--reverse'
 let g:airline_theme='dark'
 let g:NERDTreeHijackNetrw=0
-let g:ackprg = 'rg --vimgrep --type-not sql --smart-case'
+" let g:ackprg = 'rg --vimgrep --type-not sql --smart-case'
 let g:ack_autoclose = 1
+" exclude filenames from search
+command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 lua << EOF
+local actions = require('telescope.actions')
+require('telescope').setup {
+    extensions = {
+        fzy_native = {
+            override_generic_sorter = false,
+            override_file_sorter = true,
+        }
+    },
+    defaults = {
+        file_sorter = require('telescope.sorters').get_fzy_sorter,
+        prompt_prefix = ' >',
+        color_devicons = true,
+
+        file_previewer   = require('telescope.previewers').vim_buffer_cat.new,
+        grep_previewer   = require('telescope.previewers').vim_buffer_vimgrep.new,
+        qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
+
+        mappings = {
+            i = {
+                ["<C-x>"] = false,
+                ["<C-q>"] = actions.send_to_qflist,
+            },
+        }
+    }
+}
+require('telescope').load_extension('fzy_native')
+
 require'lspconfig'.tsserver.setup{}
 require'lspconfig'.svelte.setup { settings = { format = false } }
 require'lspconfig'.clojure_lsp.setup{}
@@ -110,12 +149,36 @@ require'compe'.setup {
     ultisnips = true;
   };
 }
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    additional_vim_regex_highlighting = false,
+  },
+}
 EOF
 
-nnoremap <leader>s :<C-u>call gitblame#echo()<CR>
+fun! ColorMyPencils()
+    let g:gruvbox_contrast_dark = 'hard'
+    if exists('+termguicolors')
+        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
+    let g:gruvbox_invert_selection='0'
+
+    set background=dark
+    highlight ColorColumn ctermbg=0 guibg=grey
+    hi SignColumn guibg=none
+    hi CursorLineNR guibg=None
+    highlight Normal guibg=none
+    " highlight LineNr guifg=#ff8659
+    " highlight LineNr guifg=#aed75f
+    highlight LineNr guifg=#5eacd3
+    highlight netrwDir guifg=#5eacd3
+    highlight qfFileName guifg=#aed75f
+    hi TelescopeBorder guifg=#5eacd
+endfun
+call ColorMyPencils()
 nnoremap <leader>v :Vex<CR>
-nnoremap <C-p> :GFiles<CR>
-nnoremap <leader>f :Files<CR>
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
@@ -129,3 +192,13 @@ nnoremap <Leader>d :lua vim.lsp.buf.definition()<CR>
 nnoremap <Leader>h :lua vim.lsp.buf.hover()<CR>
 " insert a new line beneath cursor without leaving normal mode
 nnoremap <Leader>oo o<ESC>k
+nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
+nnoremap <Leader>pf :lua require('telescope.builtin').find_files()<CR>
+nnoremap <C-f> :lua require('telescope.builtin').live_grep()<CR>
+
+nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
+nnoremap <leader>pb :lua require('telescope.builtin').buffers()<CR>
+nnoremap <leader>vh :lua require('telescope.builtin').help_tags()<CR>
+nnoremap <leader>gb :lua require('telescope.builtin').git_branches()<CR>
+nnoremap <leader>gc :lua require('telescope.builtin').git_commits()<CR>
