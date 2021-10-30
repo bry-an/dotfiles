@@ -1,1 +1,3 @@
-require'lspconfig'.clojure_lsp.setup{}
+require'lspconfig'.clojure_lsp.setup{
+    autostart = false;
+}
