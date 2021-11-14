@@ -11,11 +11,11 @@ fun! ColorMyPencils()
     hi SignColumn guibg=none
     hi CursorLineNR guibg=None
     highlight Normal guibg=none
-    " highlight LineNr guifg=#ff8659
-    " highlight LineNr guifg=#aed75f
-    highlight LineNr guifg=#5eacd3
+    highlight LineNr guibg=none guifg=#777777
+    highlight Comment guibg=none guifg=#A0A0AB
     highlight netrwDir guifg=#5eacd3
     highlight qfFileName guifg=#aed75f
+    highlight Visual guibg=#777777
     hi TelescopeBorder guifg=#5eacd
 endfun
 call ColorMyPencils()

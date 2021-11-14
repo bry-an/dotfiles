@@ -21,6 +21,7 @@ set nohlsearch
 set formatoptions-=ro
 set wildignore+=**/node_modules/*
 set hidden
+set incsearch
 
 " save undo info
 if !isdirectory($HOME."/.vim")
@@ -32,3 +33,7 @@ endif
 
 set undodir=~/.vim/undo-dir
 set undofile
+
+if (has("termguicolors"))
+ set termguicolors
+endif

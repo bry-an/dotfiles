@@ -1,4 +1,3 @@
-syntax on
 
 call plug#begin('~/.vim/plugged')
 " Telescope
@@ -14,6 +13,9 @@ Plug 'tpope/vim-fugitive'
 
 " Themes
 Plug 'morhetz/gruvbox'
+Plug 'arcticicestudio/nord-vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'jacoborus/tender.vim'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -46,10 +48,9 @@ Plug 'venantius/vim-cljfmt'
 Plug 'guns/vim-sexp'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
 " parinfer - recompile on update
-" Plug 'eraserhd/parinfer-rust', {'do':
+Plug 'eraserhd/parinfer-rust', {'do':
         \  'cargo build --release'}
 Plug 'tpope/vim-fireplace'
-Plug 'Olical/conjure', {'tag': 'v4.25.0'}
 
 " allow other plugins to tap into . repeat
 Plug 'tpope/vim-repeat'
@@ -62,9 +63,13 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " update the parser
 Plug 'nvim-treesitter/playground'
 
 Plug 'tpope/vim-commentary'
+Plug 'tzachar/compe-tabnine', { 'do': './install.sh' }
 
 call plug#end()
-colorscheme gruvbox
+
+colorscheme tender
+syntax on
+syntax enable
 
 let mapleader = " "
 
@@ -72,7 +77,6 @@ let g:airline_theme='dark'
 let g:NERDTreeHijackNetrw=0
 " do not format on autosave cljfmt
 let g:clj_fmt_autosave = 0
-
 
 lua require('bryan')
 
@@ -83,9 +87,17 @@ nnoremap <leader>gc :GCheckout<CR>
 nnoremap <Tab><Tab> <C-^>
 noremap <Leader>y "*y<ESC>
 noremap <Leader>p "*p<ESC>
+cnoremap ntest !npm run test:unit<CR>
+cnoremap ctest !lein test<CR>
+nnoremap <Leader>fd :w !diff % -<CR>
 
 " to go first non-blank character in line
 nnoremap - ^
 nnoremap <S--> ^i
 " insert a new line beneath cursor without leaving normal mode
 nnoremap <Leader>oo o<ESC>k
+" break a destructured / named-import object into multiple lines macro
+nnoremap <Leader>, 'f)a)f)x'
+nmap ghu <Plug>(GitGutterUndoHunk)
+nmap ghs <Plug>(GitGutterStageHunk)
+nmap ghp <Plug>(GitGutterPreviewHunk)

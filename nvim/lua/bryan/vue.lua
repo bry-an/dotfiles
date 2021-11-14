@@ -1,2 +1,4 @@
-require'lspconfig'.vuels.setup{}
+require'lspconfig'.vuels.setup{
+    indent=false;
+}
 
