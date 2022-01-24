@@ -10,8 +10,8 @@ set smartindent
 set scrolloff=8
 set updatetime=100
 set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%f
 set smartcase
 set ignorecase
 set signcolumn=yes

@@ -16,6 +16,7 @@ fun! ColorMyPencils()
     highlight netrwDir guifg=#5eacd3
     highlight qfFileName guifg=#aed75f
     highlight Visual guibg=#777777
+    highlight StatusLine ctermfg=DarkGrey
     hi TelescopeBorder guifg=#5eacd
 endfun
 call ColorMyPencils()
