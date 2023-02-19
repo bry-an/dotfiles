@@ -1,4 +1,3 @@
-
 call plug#begin('~/.vim/plugged')
 " Telescope
 Plug 'nvim-lua/popup.nvim'
@@ -23,13 +22,14 @@ Plug 'jacoborus/tender.vim'
 " lint / highlighting
 Plug 'eslint/eslint'
 Plug 'pangloss/vim-javascript'
+Plug 'sheerun/vim-polyglot'
 Plug 'dense-analysis/ale'
 Plug 'ap/vim-css-color'
 Plug 'vim-syntastic/syntastic'
 Plug 'rust-lang/rust.vim'
 Plug 'prettier/vim-prettier', {
   \ 'do': 'npm install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'svelte', 'yaml', 'html'] }
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'yaml', 'html', 'vue'] }
 
 " svelte
 Plug 'evanleck/vim-svelte'
@@ -65,6 +65,7 @@ Plug 'tpope/vim-repeat'
 Plug 'kyazdani42/nvim-web-devicons'
 
 " treesitter
+
 " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " update the parsers on update
 " Plug 'nvim-treesitter/playground'
 
@@ -102,16 +103,20 @@ let g:ale_linters = {
 \}
 let g:rustfmt_autosave = 1
 
-" " Vue config
+" vue language server config
+let g:LanguageClient_serverCommands = {
+    \ 'vue': ['vls']
+    \ }
+
 " " Run both javascript and vue linters for vue files.
-" let b:ale_linter_aliases = ['javascript', 'vue']
+let b:ale_linter_aliases = ['javascript', 'vue']
 " " Select the eslint and vls linters.
-" let b:ale_linters = ['eslint', 'vls']
+let b:ale_linters = ['eslint', 'html']
 
 lua require('bryan')
 
 " treesitter settings
-" lua require'nvim-treesitter.configs'.setup { highlight = { enable = true }, incremental_selection = { enable = true }, textobjects = { enable = true }}
+lua require'nvim-treesitter.configs'.setup { highlight = { enable = true }, incremental_selection = { enable = true }, textobjects = { enable = true }}
 nnoremap <leader>v :Vex<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 inoremap jl <Esc>

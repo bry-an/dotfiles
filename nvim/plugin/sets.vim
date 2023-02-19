@@ -5,8 +5,8 @@ set tabstop=4 softtabstop=4
 set shiftwidth=4
 " On pressing tab, insert 4 spaces
 set expandtab
-set autoindent
-set smartindent
+"set autoindent
+"set smartindent
 set scrolloff=8
 set updatetime=100
 set statusline+=%#warningmsg#
