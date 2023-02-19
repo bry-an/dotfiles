@@ -1,1 +1,1 @@
-require'lspconfig'.svelte.setup { settings = { format = false } }
+require('lspconfig').svelte.setup { settings = { format = true } }
