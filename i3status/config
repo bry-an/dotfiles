@@ -1,0 +1,39 @@
+general {
+  colors = true
+  color_good = "#a3be8c"
+  color_bad  = "#bf616a"
+  color_degraded = "#ebcb8b"
+  interval = 1
+  separator = "|"
+}
+
+disk "/" {
+  format = "/: %percentage_used"
+}
+
+cpu_usage {
+  format = "CPU_0: %cpu0 CPU_1: %cpu1 CPU_2: %cpu2 CPU_3: %cpu3"
+  degraded_threshold = 90
+  max_threshold = 95
+}
+
+wireless wlp4s0 {
+  format_up = "WLS: (%quality at %ssid) %ip"
+  format_down  = "WLS: down"
+}
+
+memory {
+  memory_used_method = classical
+  format="Memory: %used/%total"
+}
+
+cpu_temperature 1 { 
+    format = "San Diego: %degrees °F" 
+    path = "/var/weather" 
+}
+
+order += "disk /" 
+order += "cpu_usage" 
+order += "wireless wlp4s0" 
+order += "memory" 
+order += "cpu_temperature 1" 

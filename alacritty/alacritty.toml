@@ -1,0 +1,5 @@
+[env]
+TERM = "alacritty"
+
+[window]
+    opacity = 0.6 

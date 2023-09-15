@@ -1,0 +1,5 @@
+xset r rate 200 30
+
+feh --bg-scale /home/bry/Pictures/aesthetic-wallpaper-38.jpg
+
+xcompmgr -c -t-5 -l-5 -r4.2 -o.55 &
